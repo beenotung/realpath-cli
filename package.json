@@ -36,6 +36,9 @@
     "realpath": "./realpath.js",
     "realpath-cli": "./realpath.js"
   },
+  "files": [
+    "realpath.js"
+  ],
   "scripts": {
     "test": "bash ./test.sh"
   }
