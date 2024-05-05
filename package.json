@@ -1,0 +1,42 @@
+{
+  "name": "realpath-cli",
+  "version": "1.0.0",
+  "description": "Node.js shim of the Linux-style realpath command for macOS compatibility.",
+  "keywords": [
+    "realpath",
+    "path",
+    "filesystem",
+    "resolve",
+    "absolute-path",
+    "relative-path",
+    "link",
+    "symbolic-link",
+    "cli",
+    "command-line",
+    "macos",
+    "linux",
+    "compatibility",
+    "shim"
+  ],
+  "author": {
+    "name": "Beeno Tung",
+    "email": "aabbcc1241@yahoo.com.hk",
+    "url": "https://beeno-tung.surge.sh"
+  },
+  "license": "BSD-2-Clause",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beenotung/realpath-cli.git"
+  },
+  "homepage": "https://github.com/beenotung/realpath-cli#readme",
+  "bugs": {
+    "url": "https://github.com/beenotung/realpath-cli/issues"
+  },
+  "bin": {
+    "realpath": "./realpath.js",
+    "realpath-cli": "./realpath.js"
+  },
+  "scripts": {
+    "test": "bash ./test.sh"
+  }
+}
