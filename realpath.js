@@ -20,7 +20,7 @@ for (let i = 2; i < args.length; i++) {
     options.version = true
     break
   }
-  if (arg == '-s') {
+  if (arg == '-s' || arg === '--strip' || arg === '--no-symlinks') {
     options.symbolic = true
     continue
   }
@@ -61,9 +61,10 @@ Usage: realpath [options] <file>
 Options:
   -h, --help          Display this help message and exit.
   -v, --version       Output version information and exit.
-  -s                  Treat the link symbolically instead of resolving it.
+  -s, --strip,
+      --no-symlinks   Do not expand symbolic links.
   --relative-to=path  Output the relative path with respect to the directory provided.
-                      If no path is specified immediately after, it expects the next argument
+                      If no path specified immediately after, it expects the next argument
                       to be the path.
 
 Arguments:
@@ -76,9 +77,8 @@ Examples:
   realpath -s --relative-to "$PWD" data/db.sqlite3
 
 Description:
-  This tool provides a way to use realpath functionality on macOS, similar to how it is used in Linux.
-  It resolves the absolute path of the provided file, with optional handling for symbolic links and
-  capability to provide paths relative to a specified directory.
+  By default symlink targets are expanded when possible (similar to GNU realpath).
+  Use -s, --strip, or --no-symlinks for path normalization without following symlinks.
 `.trim(),
   )
   process.exit(0)
@@ -89,12 +89,39 @@ if (!options.file) {
   process.exit(1)
 }
 
+let fs = require('fs')
 let path = require('path')
 
-let file = path.resolve(options.file)
+function resolvedPath(target) {
+  if (options.symbolic) {
+    return path.resolve(target)
+  }
+  try {
+    return fs.realpathSync(target)
+  } catch (e) {
+    if (e.code !== 'ENOENT') {
+      console.error(e.message)
+      process.exit(1)
+    }
+    let dir = path.dirname(target)
+    if (dir === target) {
+      console.error(e.message)
+      process.exit(1)
+    }
+    try {
+      let dirCanon = fs.realpathSync(dir)
+      return path.normalize(path.join(dirCanon, path.basename(target)))
+    } catch (_) {
+      console.error(e.message)
+      process.exit(1)
+    }
+  }
+}
+
+let file = resolvedPath(options.file)
 
 if (options.relative_to) {
-  let relative_to = path.resolve(options.relative_to)
+  let relative_to = resolvedPath(options.relative_to)
   let relative_parts = relative_to.split('/')
   let file_parts = file.split('/')
   while (
