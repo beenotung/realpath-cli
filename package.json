@@ -1,6 +1,6 @@
 {
   "name": "realpath-cli",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Node.js shim of the Linux-style realpath command for macOS compatibility.",
   "keywords": [
     "realpath",
